@@ -5,6 +5,7 @@ import java.text.*;
 /**
  * Containing items and calculating price.
  * @author Stolyar Mykola
+ * @version JDK1.15
  */
 public class ShoppingCart {
 
