@@ -79,26 +79,12 @@ public class ShoppingCart {
     private String getFormattedTicketTable(double total){
         if (items.size() == 0)
             return "No items.";
-        List<String[]> lines = new ArrayList<String[]>();
         String[] header = {"#","Item","Price","Quan.","Discount","Total"};
         int[] align = new int[] { 1, -1, 1, 1, 1, 1 };
-        // formatting each line
-        total = 0.00;
+        List<String[]> lines = convertItemsToTableLines();
         int index = 0;
-        for (Item item : items) {
-            int discount = calculateDiscount(item.getItemType(), item.getQuantity());
-            item.setTotalPrice(item.getPrice() * item.getQuantity() * (100.00 - item.getDiscount())/100.00);
-            lines.add(new String[]{
-                    String.valueOf(++index), item.getTitle(),
-                    MONEY.format(item.getPrice()), String.valueOf(item.getQuantity()),
-                    (item.getDiscount() == 0) ? "-" : (String.valueOf(item.getDiscount()) + "%"),
-                    MONEY.format(item.getTotalPrice())
-            });
-            total += discount;
-        }
-        String[] footer = { String.valueOf(index),"","","","",
-                MONEY.format(total) };
-// column max length
+        String[] footer = { String.valueOf(index),"","","","", MONEY.format(total) };
+        // column max length
         int[] width = new int[]{0,0,0,0,0,0};
         for (String[] line : lines)
             adjustColumnWidth(width, line);
@@ -123,6 +109,20 @@ public class ShoppingCart {
         // footer
         appendFormattedLine(sb, footer, align, width, false);
         return sb.toString();
+    }
+
+    private List<String[]> convertItemsToTableLines(){
+        List<String[]> lines = new ArrayList<String[]>();
+        int index = 0;
+        for (Item item : items) {
+            lines.add(new String[]{
+                    String.valueOf(++index), item.getTitle(),
+                    MONEY.format(item.getPrice()), String.valueOf(item.getQuantity()),
+                    (item.getDiscount() == 0) ? "-" : (String.valueOf(item.getDiscount()) + "%"),
+                    MONEY.format(item.getTotalPrice())
+            });
+        }
+        return lines;
     }
 
     private void adjustColumnWidth(int[] width, String[] columns){
